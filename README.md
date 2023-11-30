@@ -1,11 +1,6 @@
 
 # AI_Checkers_Game
 
----
-gitea: none
-include_toc: true
----
-
 ## Introduction
 Dans le cadre de l’UE Intelligence Artificielle de la troisième année de licence Informatique et
 Applications à l’Université Paris Cité, nous avons été amenés à concevoir et développer un
