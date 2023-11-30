@@ -8,9 +8,6 @@ def main():
     jeu = Jeu()
 
     jeu.menu(clock)
-    #jeu.facile_vs_difficile(clock)
-    #jeu.facile_vs_inter(clock)
-    #jeu.difficile_vs_inter(clock)
     
 main()
 
