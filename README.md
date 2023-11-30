@@ -142,7 +142,7 @@ et ne pas laisser tourner le code trop longtemps. Voici les résultats obtenus :
 Taux de victoire :
 
     ▪ IA intermédiaire : 18,5%
-    ▪  IA difficile : 81,2%
+    ▪ IA difficile : 81,2%
 
 Matchs Nuls :
 
