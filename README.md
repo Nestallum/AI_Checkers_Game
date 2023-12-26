@@ -5,14 +5,22 @@
 - [Introduction](#introduction)
 - [Pygame](#pygame)
 - [Rappel des règles du jeu](#rappel-des-règles-du-jeu)
-- [But du jeu](#but-du-jeu)
-- [La prise](#la-prise)
-- [Promotion dames](#promotion-dames)
-- [Gagner une partie](#gagner-une-partie)
+    - [But du jeu](#but-du-jeu)
+    - [La prise](#la-prise)
+    - [Promotion dames](#promotion-dames)
+    - [Gagner une partie](#gagner-une-partie)
 - [Implémentation des IAs](#implémentation-des-ias)
-- [Fonction d’évaluation](#fonction-dévaluation)
-- [Minimax et profondeur de recherche](#minimax-et-profondeur-de-recherche)
-- [Élagage Alpha-Beta](#élagage-alpha-beta)
+    - [Fonction d’évaluation](#fonction-dévaluation)
+    - [Minimax et profondeur de recherche](#minimax-et-profondeur-de-recherche)
+    - [Élagage Alpha-Beta](#élagage-alpha-beta)
+    - [Difficultés : Simple, Intermédiaire, Difficile](#difficultés--simple-intermédiaire-difficile)
+- [Résultats statistiques](#résultats-statistiques)
+    - [IA facile vs IA intermédiaire](#ia-facile-vs-ia-intermédiaire)
+    - [IA facile vs IA difficile](#ia-facile-vs-ia-difficile)
+    - [IA intermédiaire vs IA difficile](#ia-intermédiaire-vs-ia-difficile)
+    - [Analyse des résultats](#analyse-des-résultats)
+- [Conclusion](#conclusion)
+- [Sources](#sources)
 
 ## Introduction
 Dans le cadre de l’UE Intelligence Artificielle de la troisième année de licence Informatique et
@@ -146,9 +154,18 @@ Matchs Nuls :
 
     ▪ Aucun
 
-* Note : Les matchs nuls sont plutôt rares. Généralement, l’une des IA finira toujours par l’emporter. 
+* Note : Les matchs nuls sont plutôt rares. Généralement, l’une des IA finira toujours par l’emporter.
 
 ### IA facile vs IA difficile
+Taux de victoire :
+
+    ▪ IA facile : 0,3%
+    ▪ IA difficile : 99,7%
+Matchs Nuls :
+
+    ▪ Aucun
+
+### IA intermédiaire vs IA difficile
 Pour ce cas, nous avons chacun de notre côté lancé 500 parties afin d’optimiser notre temps
 et ne pas laisser tourner le code trop longtemps. Voici les résultats obtenus :
 
