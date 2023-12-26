@@ -8,6 +8,7 @@
   - [Objective](#objective)
   - [Capturing](#capturing)
   - [King Promotion](#king-promotion)
+  - [Draw](#draw)
   - [Winning the Game](#winning-the-game)
 - [Sources](#sources)
 
