@@ -1,6 +1,19 @@
 
 # AI_Checkers_Game
 
+## Table des Matières
+- [Introduction](#introduction)
+- [Pygame](#pygame)
+- [Rappel des règles du jeu](#rappel-des-règles-du-jeu)
+- [But du jeu](#but-du-jeu)
+- [La prise](#la-prise)
+- [Promotion dames](#promotion-dames)
+- [Gagner une partie](#gagner-une-partie)
+- [Implémentation des IAs](#implémentation-des-ias)
+- [Fonction d’évaluation](#fonction-dévaluation)
+- [Minimax et profondeur de recherche](#minimax-et-profondeur-de-recherche)
+- [Élagage Alpha-Beta](#élagage-alpha-beta)
+
 ## Introduction
 Dans le cadre de l’UE Intelligence Artificielle de la troisième année de licence Informatique et
 Applications à l’Université Paris Cité, nous avons été amenés à concevoir et développer un
