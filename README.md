@@ -25,8 +25,8 @@
 ## Introduction
 As part of the Artificial Intelligence course in the third year of the Computer Science and Applications degree at the University of Paris Cité, we were tasked with designing and developing a turn-based two-player perfect information game. The game should facilitate human player versus artificial player matches and provide an option to choose between three difficulty levels. For this project, we chose a variant of the checkers game: Anglo-American checkers. In this document, we will attempt to explain the path we followed to achieve our goals, detailing the obtained statistical results.
 
-## Pygame
-To execute the source code, you will need the Pygame library. You can install it on your machine using the following command:
+## Required
+To execute the source code, you will need a Python 3.x version and the Pygame library. You can install it on your machine using the following command:
 
     pip install pygame
 
