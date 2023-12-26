@@ -1,206 +1,124 @@
 
 # AI_Checkers_Game
 
-## Table des Matières
+## Table of Contents
 - [Introduction](#introduction)
 - [Pygame](#pygame)
-- [Rappel des règles du jeu](#rappel-des-règles-du-jeu)
-    - [But du jeu](#but-du-jeu)
-    - [La prise](#la-prise)
-    - [Promotion dames](#promotion-dames)
-    - [Gagner une partie](#gagner-une-partie)
-- [Implémentation des IAs](#implémentation-des-ias)
-    - [Fonction d’évaluation](#fonction-dévaluation)
-    - [Minimax et profondeur de recherche](#minimax-et-profondeur-de-recherche)
-    - [Élagage Alpha-Beta](#élagage-alpha-beta)
-    - [Difficultés : Simple, Intermédiaire, Difficile](#difficultés--simple-intermédiaire-difficile)
-- [Résultats statistiques](#résultats-statistiques)
-    - [IA facile vs IA intermédiaire](#ia-facile-vs-ia-intermédiaire)
-    - [IA facile vs IA difficile](#ia-facile-vs-ia-difficile)
-    - [IA intermédiaire vs IA difficile](#ia-intermédiaire-vs-ia-difficile)
-    - [Analyse des résultats](#analyse-des-résultats)
+- [Game Rules Overview](#game-rules-overview)
+  - [Objective](#objective)
+  - [Capturing](#capturing)
+  - [King Promotion](#king-promotion)
+  - [Winning the Game](#winning-the-game)
+- [Implementation of AIs](#implementation-of-ais)
+  - [Evaluation Function](#evaluation-function)
+  - [Minimax and Depth of Search](#minimax-and-depth-of-search)
+  - [Alpha-Beta Pruning](#alpha-beta-pruning)
+  - [Difficulty Levels: Easy, Intermediate, Hard](#difficulty-levels--easy-intermediate-hard)
+- [Statistical Results](#statistical-results)
+  - [Easy AI vs Intermediate AI](#easy-ai-vs-intermediate-ai)
+  - [Easy AI vs Hard AI](#easy-ai-vs-hard-ai)
+  - [Intermediate AI vs Hard AI](#intermediate-ai-vs-hard-ai)
+- [Results Analysis](#results-analysis)
 - [Conclusion](#conclusion)
 - [Sources](#sources)
 
 ## Introduction
-Dans le cadre de l’UE Intelligence Artificielle de la troisième année de licence Informatique et
-Applications à l’Université Paris Cité, nous avons été amenés à concevoir et développer un
-jeu tour par tour à deux joueurs et à connaissance parfaite. Ce jeu a pour objectif de proposer
-des parties joueur humain contre joueur artificiel, et doit permettre de pouvoir choisir entre 3
-difficultés différentes. Pour ce projet, notre choix s’est porté sur une variante du jeu de dames : les dames Anglo-Américaines.
-Dans ce document, nous tenterons d’expliquer le plus clairement possible le cheminement que nous
-avons suivi afin de parvenir à nos objectifs, en prenant soin de détailler les résultats statistiques obtenus.
+As part of the Artificial Intelligence course in the third year of the Computer Science and Applications degree at the University of Paris Cité, we were tasked with designing and developing a turn-based two-player perfect information game. The game should facilitate human player versus artificial player matches and provide an option to choose between three difficulty levels. For this project, we chose a variant of the checkers game: Anglo-American checkers. In this document, we will attempt to explain the path we followed to achieve our goals, detailing the obtained statistical results.
 
 ## Pygame
-Pour pouvoir exécuter le code source, vous aurez besoin de la bibliothèque **Pygame**. Pour cela, vous pouvez l'installer sur votre machine via la commande suivante :
-    
+To execute the source code, you will need the Pygame library. You can install it on your machine using the following command:
+
     pip install pygame
 
-## Rappel des règles du jeu
-Le jeu de dames Anglo-Américaines se joue sur un plateau de 64 cases, alternativement foncées
-et claires, disposées en damier. Les joueurs disposent chacun de 12 pions de couleur claire ou
-foncée, qui sont placés sur les cases noires des trois rangées les plus proches de chaque joueur.
+## Game Rules Overview
+The Anglo-American checkers game is played on a 64-square board, alternately dark and light, arranged in a checkerboard pattern. Each player has 12 pieces of light or dark color, placed on the dark squares of the three rows closest to each player.
 
-### But du jeu
-Le but du jeu est de capturer tous les pions de l’adversaire ou de bloquer ses pions de sorte qu’ils ne puissent plus bouger. Les pions peuvent se déplacer en diagonale sur les cases adjacentes, mais uniquement vers l’avant. On se déplace donc exclusivement sur les cases foncées.
+### Objective
+The goal of the game is to capture all the opponent's pieces or block them in such a way that they cannot move anymore. Pieces can move diagonally to adjacent squares, but only forward. Movement is exclusively on dark squares.
 
-### La prise
-Un pion peut prendre (ou “manger”) un pion adverse en sautant par-dessus lui diagonalement, vers une case libre derrière le pion adverse. La prise multiple est possible.
-Attention : La prise est obligatoire. Cela signifie que le joueur qui joue à l'obligation de prendre si cela est possible.
+### Capturing
+A piece can capture (or "eat") an opponent's piece by jumping over it diagonally to an empty square behind the opponent's piece. Multiple captures in a single turn are possible. Note: Capturing is mandatory, meaning the player must capture if possible.
 
-### Promotion dames
-Si un pion atteint la dernière rangée de l’adversaire, il est promu en dame. Les dames ont le droit de se déplacer en diagonales dans toutes les directions (d’une case maximum), nous n’avons pas implémenté la possibilité de rendre la dame “volante”, c'est-à-dire qu’elle ne peut pas sauter par-dessus plusieurs cases à la fois.
-### Match Nul
-Nous avons imposé une limite de coups aux IAs de sorte que les parties ne soient pas interminables. Si
-la limite est dépassée et qu’il n’y a eu aucune prise, la partie est déclarée nulle (arrive relativement
-rarement). Sinon, à chaque nouvelle prise le compteur se réinitialise.
-### Gagner une partie
-Dans notre jeu, il existe deux manières de gagner une partie. La première façon est de capturer tous
-les pions adverses. La seconde manière de gagner est indirecte : Si l’adversaire ne peut plus jouer de
-coup légal, il perd.
+### King Promotion
+If a piece reaches the last row of the opponent's side, it is promoted to a king. Kings can move diagonally in all directions (up to one square), but we did not implement the ability for kings to "fly," meaning they cannot jump over multiple squares at once.
 
-## Implémentation des IAs
-L’une des principales difficultés de ce projet était tout d’abord d’implémenter une intelligence
-artificielle capable de prendre une décision afin de déterminer le meilleur prochain coup à jouer
-en fonction des informations disponibles et de sa capacité de calcul. Une fois cela fait, il fallait
-ensuite créer des IAs de difficulté différente, en faisant appel à des notions de stratégies afin de renforcer
-leurs compétences. En effet, les IAs les plus avancées peuvent utiliser des stratégies plus complexes, ce
-qui leur donne un avantage sur les IAs plus faibles et sur les joueurs humains moins expérimentés.
-L’implémentation des difficultés implique de bien comprendre les règles et les mécanismes du jeu afin
-d’analyser et de déterminer le meilleur état possible en fonction de différents facteurs et situations à
-prendre en compte.
+### Draw
+We imposed a move limit on AIs to prevent endless games. If the limit is reached and no captures have occurred, the game is declared a draw (which is relatively rare). Otherwise, with each new capture, the counter resets.
 
-### Fonction d’évaluation
-En intelligence artificielle, une fonction d'évaluation est une méthode utilisée pour évaluer un état ou
-une configuration donnée dans un problème donné. Dans notre cas, elle est utilisée dans l’algorithme
-minimax que nous avons implémenté.
-L'objectif de la fonction d'évaluation est de donner une valeur numérique à un état, qui peut être utilisée
-pour comparer cet état avec d'autres états possibles et déterminer quelle est la meilleure action à
-effectuer à partir de cette situation.
-Globalement, plus la fonction d’évaluation prend de facteurs en compte, plus l’IA sera apte à prendre
-la meilleure décision possible. Dans notre cas, elle doit être capable de fournir des informations précises
-et utiles sur la position des pièces sur le plateau, afin que l'IA puisse prendre des décisions éclairées sur
-les mouvements à effectuer. De plus, il peut être intéressant d’ajouter des coefficients à nos facteurs
-afin de leur donner un poids plus ou moins important. Une fonction d'évaluation plus sophistiquée
-permettra à l'IA de mieux comprendre les configurations complexes et les interactions entre les pièces
-sur le plateau, et donc de prendre des décisions plus avancées.
-Voici nos choix de fonction d’évaluation:
+### Winning the Game
+In our game, there are two ways to win. The first is to capture all the opponent's pieces. The second indirect way to win is if the opponent can no longer make a legal move.
 
-    ▪ IA facile : Prend en compte la différence du nombre de pion de chaque joueur sur le damier.
+## Implementation of AIs
+One of the main challenges of this project was initially implementing artificial intelligence capable of making a decision to determine the best next move based on available information and computational capacity. Once done, we had to create AIs of different difficulty levels, using strategic concepts to enhance their abilities. Advanced AIs can use more complex strategies, giving them an advantage over weaker AIs and less experienced human players. Implementing difficulty levels involves a solid understanding of the rules and mechanics of the game to analyze and determine the best possible state based on various factors and situations.
 
-    ▪ IA intermédiaire : Idem que l’IA facile, prend aussi en compte la différence du nombre de
-    dames sur le damier.
+### Evaluation Function
+In artificial intelligence, an evaluation function is a method used to assess a given state or configuration in a given problem. In our case, it is used in the minimax algorithm we implemented. The goal of the evaluation function is to assign a numerical value to a state, which can be used to compare it with other possible states and determine the best action to take from that situation. In general, the more factors the evaluation function considers, the better the AI will be at making the best possible decision. In our case, it must provide precise and useful information about the position of pieces on the board, enabling the AI to make informed decisions about movements. Additionally, adding coefficients to our factors to give them more or less weight can be beneficial. A more sophisticated evaluation function allows the AI to better understand complex configurations and interactions between pieces on the board, resulting in more advanced decisions. Here are our choices for the evaluation function:
 
-    ▪ IA difficile : Idem que l’IA intermédiaire, prend aussi en compte la position des pions (proche
-    de promotion dame, pion bloqués, pion attaquants).
+    ▪ Easy AI: Considers the difference in the number of pieces for each player on the board.
 
-### Minimax et profondeur de recherche
-L'algorithme Minimax est un algorithme de recherche utilisé en intelligence artificielle pour la prise de
-décision dans des jeux à deux joueurs à somme nulle, tels que les échecs ou le tic-tac-toe. Son objectif
-est de trouver le meilleur coup possible pour un joueur à partir d’un état donné. Il suppose que chaque
-joueur cherche à maximiser son propre gain et à minimiser le gain de l'adversaire.
-L’algorithme minimax utilise une profondeur maximale à ne pas dépasser. En effet, en limitant la
-profondeur de recherche, l'algorithme Minimax peut explorer l'arbre de recherche jusqu'à une certaine
-profondeur et évaluer les positions atteintes, ce qui permet de déterminer le meilleur coup à jouer dans
-cette situation. La profondeur de recherche est donc un compromis entre la qualité de la décision prise
-et le temps de calcul nécessaire pour l'obtenir.
+    ▪ Intermediate AI: Same as the Easy AI, also considers the difference in the number of kings on the board.
 
-Il est important de noter que plus la profondeur de recherche est élevée, plus l'algorithme Minimax est
-susceptible de trouver la meilleure décision possible, mais plus le temps de calcul est important. À
-l'inverse, une faible profondeur de recherche peut entraîner des décisions moins précises mais plus
-rapidement obtenues. En outre, on peut facilement remarquer que changer la profondeur de recherche
-aura un impact significatif sur la performance de l’IA.
+    ▪ Hard AI: Same as the Intermediate AI, also considers the position of the pieces (close to king promotion, blocked pieces, attacking pieces).
 
-Voici nos choix de profondeur :
+### Minimax and Depth of Search
+The Minimax algorithm is a search algorithm used in artificial intelligence for decision-making in two-player zero-sum games, such as chess or tic-tac-toe. Its goal is to find the best possible move for a player from a given state. It assumes that each player seeks to maximize their own gain and minimize the opponent's gain. The Minimax algorithm uses a maximum depth to not exceed. By limiting the depth of the search, the Minimax algorithm can explore the search tree up to a certain depth and evaluate the reached positions, determining the best move to play in that situation. The depth of the search is a compromise between the quality of the decision made and the time required for computation.
 
-    ▪ IA facile : profondeur 1.
-    ▪ IA intermédiaire : profondeur 3.
-    ▪ IA difficile : profondeur 5.
+It is important to note that a higher depth of search makes it more likely for the Minimax algorithm to find the best possible decision, but it also increases computation time. Conversely, a low depth of search may result in less precise decisions obtained more quickly. Additionally, changing the depth of search will significantly impact the performance of the AI. Here are our choices for the depth:
 
-### Élagage Alpha-Beta
-L'élagage alpha-beta est une technique utilisée dans l'algorithme Minimax pour réduire le nombre de
-nœuds de l'arbre de recherche à explorer, afin d'optimiser les performances de l'IA. L'élagage consiste
-à éliminer certaines branches de l'arbre de recherche qui sont susceptibles de ne pas mener à une solution
-optimale, ce qui permet d'économiser du temps de calcul.
-Cette technique permet d'éliminer des branches de l'arbre de recherche qui ne sont pas pertinentes en
-fonction des valeurs minimales et maximales déjà calculées pour les nœuds précédents. Elle fonctionne
-en comparant les valeurs minimales et maximales calculées pour les nœuds précédents avec celles des
-nœuds suivants. Si une branche a une valeur minimale ou maximale qui ne peut pas améliorer le résultat
-déjà obtenu, elle peut être élaguée sans affecter le résultat final.
-Dans le cadre de notre projet, nous avons mis en place cette technique afin de minimiser la complexité
-en temps de notre algorithme de recherche.
+    ▪ Easy AI: Depth 1.
+    ▪ Intermediate AI: Depth 3.
+    ▪ Hard AI: Depth 5.
 
-### Difficultés : Simple, Intermédiaire, Difficile
-Il nous était demandé d’implémenter trois difficultés d’IAs différentes, allant de la plus simple à la plus
-difficile. Afin d’atteindre cet objectif, nous avons donné à chaque IA une fonction d’évaluation et une
-profondeur de recherche différente. En effet, la complexité de la fonction d'évaluation et la profondeur
-de recherche sont deux facteurs clés pour déterminer la difficulté de l'IA dans le contexte de notre jeu.
-En d’autres termes, la fonction d’évaluation donnée est plus ou moins complexe en fonction de la
-difficulté de l’IA souhaitée et la profondeur de recherche associée est plus ou moins importante afin de
-creuser l’écart de difficulté entre nos IAs.
+### Alpha-Beta Pruning
+Alpha-beta pruning is a technique used in the Minimax algorithm to reduce the number of nodes in the search tree to explore, optimizing the performance of the AI. Pruning involves eliminating certain branches of the search tree that are unlikely to lead to an optimal solution, saving computation time. This technique eliminates branches of the search tree that are not relevant based on the minimum and maximum values already calculated for previous nodes. It works by comparing the calculated minimum and maximum values for previous nodes with those of the following nodes. If a branch has a minimum or maximum value that cannot improve the already obtained result, it can be pruned without affecting the final result. In our project, we implemented this technique to minimize the time complexity of our search algorithm.
 
-## Résultats statistiques
-Afin de comparer nos IAs et ainsi avoir une meilleure idée de leurs performances afin de les
-optimisées, nous les avons fait jouer l’une contre l’autre pendant un total de 1000 parties
-d'affilée. Après avoir modifié certains paramètres afin d’obtenir des résultats bien distincts et
-cohérents, voici ce que nous avons obtenu :
 
-### IA facile vs IA intermédiaire
-Taux de victoire :
+### Difficulty Levels : Easy, Intermediate, Hard
+We were tasked with implementing three different difficulty levels for the AIs, ranging from easy to hard. To achieve this goal, we assigned each AI a different evaluation function and search depth. Indeed, the complexity of the evaluation function and the search depth are two key factors in determining the difficulty of the AI in the context of our game. In other words, the given evaluation function is more or less complex depending on the desired AI difficulty, and the associated search depth is more or less significant to widen the difficulty gap between our AIs.
 
-    ▪ IA facile : 1,6%
-    ▪ IA intermédiaire : 98,4%
-Matchs Nuls :
+## Statistical Results
+To compare our AIs and gain a better understanding of their performances for optimization, we had them play against each other for a total of 1000 consecutive games. After adjusting certain parameters to obtain distinct and consistent results, here's what we obtained:
 
-    ▪ Aucun
+### Easy AI vs Intermediate AI
+Victory Rates:
 
-* Note : Les matchs nuls sont plutôt rares. Généralement, l’une des IA finira toujours par l’emporter.
+    ▪ Easy AI: 1.6%
+    ▪ Intermediate AI: 98.4%
+Draws:
+    
+    ▪ None
 
-### IA facile vs IA difficile
-Taux de victoire :
+*   Note: Draws are relatively rare. Generally, one of the AIs will eventually prevail.
 
-    ▪ IA facile : 0,3%
-    ▪ IA difficile : 99,7%
-Matchs Nuls :
+### Easy AI vs Hard AI
+Victory Rates:
 
-    ▪ Aucun
+    ▪ Easy AI: 0.3%
+    ▪ Hard AI: 99.7%
 
-### IA intermédiaire vs IA difficile
-Pour ce cas, nous avons chacun de notre côté lancé 500 parties afin d’optimiser notre temps
-et ne pas laisser tourner le code trop longtemps. Voici les résultats obtenus :
+Draws:
 
-Taux de victoire :
+    ▪ None
 
-    ▪ IA intermédiaire : 18,5%
-    ▪ IA difficile : 81,2%
+### Intermediate AI vs Hard AI
+For this case, we each ran 500 games on our side to optimize our time and avoid letting the code run for too long. Here are the results:
 
-Matchs Nuls :
+Victory Rates:
 
-    ▪ 3 nuls : 0,3%
+    ▪ Intermediate AI: 18.5%
+    ▪ Hard AI: 81.2%
 
-### Analyse des résultats
+Draws:
 
-On remarque que l’IA difficile l’emporte haut la main contre chacune des difficultés. De plus,
-l’IA facile quant à elle gagne très rarement, ce qui est plutôt cohérent. Les paramètres attribués
-qui nous ont permis d’arriver à ce bilan ont donc été conservés.
+    ▪ 3 draws: 0.3%
+
+### Results Analysis
+It's noticeable that the Hard AI prevails significantly against each difficulty level. Additionally, the Easy AI wins very rarely, which is quite consistent. The assigned parameters that led to this outcome have thus been retained.
 
 ## Conclusion
-
-Finalement, les résultats observés sont plus que satisfaisants vis à vis de nos attentes. D’autre part,
-ce projet nous a permis de développer et mettre en pratique nos compétences en Intelligence
-Artificielle. De plus, il nous a offert l'opportunité de travailler en équipe sur une problématique
-concrète. Nous sommes convaincus que les connaissances acquises nous seront précieuses pour nos
-futurs travaux en Intelligence Artificielle.
+In conclusion, the observed results are more than satisfactory concerning our expectations. Moreover, this project allowed us to develop and put into practice our skills in Artificial Intelligence. Furthermore, it provided us with the opportunity to work as a team on a concrete problem. We are confident that the knowledge gained will be valuable for our future work in Artificial Intelligence.
 
 ## Sources
-Ci-dessous, un lien GitHub vers un projet similaire qui nous a aidé à coder la base du jeu sans IA :
-https://github.com/techwithtim/Python-Checkers
-Nous nous sommes inspirés des fonctions et des classes afin d’avoir une base de jeu fonctionnelle que
-nous avons par la suite optimisé et amélioré afin qu’il ressemble plus à ce que nous voulions faire. Par
-exemple, nous avons ajouté différentes fonctions afin de modifier certaines règles ainsi que les modes
-de jeu. Nous avons notamment implémenté la prise obligatoire, le match nul par limite de coup, les
-méthodes faisant jouer les IAs entres-elles, une méthode pour faire jouer un humain contre une IA en
-choisissant la difficulté souhaitée, un menu permettant de lancer la partie de notre choix (joueur vs
-joueur, joueur vs IA, IA vs IA) ainsi que les différentes méthodes nous permettant d’implémenter les
-IAs.
-
+Below is a GitHub link to a similar project that aided us in coding the basic game without AI:
+GitHub - Python-Checkers
+We drew inspiration from the functions and classes to have a functional game base that we later optimized and improved to align more closely with our goals. For instance, we added different functions to modify certain rules and game modes. We implemented mandatory capturing, a draw condition based on move limits, methods for having AIs play against each other, a method to let a human play against an AI by choosing the desired difficulty, a menu to launch the desired game mode (player vs. player, player vs. AI, AI vs. AI), and various methods to implement the AIs.
