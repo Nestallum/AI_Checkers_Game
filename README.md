@@ -119,6 +119,5 @@ It's noticeable that the Hard AI prevails significantly against each difficulty 
 In conclusion, the observed results are more than satisfactory concerning our expectations. Moreover, this project allowed us to develop and put into practice our skills in Artificial Intelligence. Furthermore, it provided us with the opportunity to work as a team on a concrete problem. We are confident that the knowledge gained will be valuable for our future work in Artificial Intelligence.
 
 ## Sources
-Below is a GitHub link to a similar project that aided us in coding the basic game without AI:
-GitHub - Python-Checkers
+Below is a GitHub link to a similar project that helped us code the base of the game without AI: https://github.com/techwithtim/Python-Checkers
 We drew inspiration from the functions and classes to have a functional game base that we later optimized and improved to align more closely with our goals. For instance, we added different functions to modify certain rules and game modes. We implemented mandatory capturing, a draw condition based on move limits, methods for having AIs play against each other, a method to let a human play against an AI by choosing the desired difficulty, a menu to launch the desired game mode (player vs. player, player vs. AI, AI vs. AI), and various methods to implement the AIs.
